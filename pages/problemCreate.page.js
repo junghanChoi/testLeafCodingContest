@@ -3,6 +3,7 @@ import helper from '../helper'
 import TasksPage from './tasks.page'
 
 class ProblemCreatePage extends Page {
+    get mainIframe() { return $("#gsft_main")}
     get number(){ return $('input[aria-label=Number]')}
 
     
@@ -10,7 +11,7 @@ class ProblemCreatePage extends Page {
     get category() { return $("//select[contains(@name,'problem.category')]")}
 
     open(){
-        browser.switchToFrame('gsft_main')
+        browser.switchToFrame(this.mainIframe)
     }
 
     saveNumber(){
@@ -26,7 +27,10 @@ class ProblemCreatePage extends Page {
         browser.switchToWindow(handles.pop())  
     }
     pickLastCategory(){
-        browser.switchToFrame('gsft_main') // When back to previous window, the frame named gsft_main is not focused
+         // When back to previous window, the frame named gsft_main is not focused
+        if (browser.isChrome) {
+            browser.switchToFrame(this.mainIframe)
+        }
         //this.category.click()
         const lastIndex = $$("//select[contains(@name,'problem.category')]/option")
         this.category.selectByIndex(lastIndex.length -1)

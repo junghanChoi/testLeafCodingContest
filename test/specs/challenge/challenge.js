@@ -18,12 +18,20 @@ describe('submit the problem', () => {
             SnPage.fillCredential()
             SnPage.login()
             
-            console.log('TITLE' + browser.getTitle)
-            expect(browser.getTitle()).to.contains('Home')
+            console.log(browser.getTitle())
+            expect(browser.getTitle()).to.contains('System')
+            
         })
     })
     describe('type filter and click create new',()=>{
+        before(()=>{
+            if (!browser.isChrome) {
+                browser.switchToFrame(0)
+            }
+        })
+
         it('type problem as filter', ()=>{
+            //browser.debug()
             SideNav.searchFilter('Problem')
         })
 

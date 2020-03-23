@@ -29,8 +29,8 @@ class SnPage extends Page {
     login() {
         this.loginBtn.click()
         browser.waitUntil(()=>{
-            return browser.getTitle().includes('Home')
-        })
+            return browser.getTitle().includes('System')
+        },200000)
     }
 }
 export default new SnPage()
