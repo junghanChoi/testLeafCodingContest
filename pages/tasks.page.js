@@ -1,6 +1,7 @@
 import Page from './page'
 import helper from '../helper'
 class TasksPage extends Page {
+    
     open(){
         driver.waitUntil(()=>browser.getTitle().includes('Tasks'))
     }

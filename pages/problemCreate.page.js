@@ -6,10 +6,12 @@ class ProblemCreatePage extends Page {
     get mainIframe() { return $("#gsft_main")}
     get number(){ return $('input[aria-label=Number]')}
 
+    get subCategory() { return $("//select[contains(@name, 'problem.subcategory')]")}
     
     get lookupButtonFirstReported(){ return $('button[name="lookup.problem.first_reported_by_task"]')}
     get category() { return $("//select[contains(@name,'problem.category')]")}
 
+    get lookupButtonService(){ return $('button[name="lookup.problem.business_service"]')}
     open(){
         browser.switchToFrame(this.mainIframe)
     }
@@ -36,7 +38,30 @@ class ProblemCreatePage extends Page {
         this.category.selectByIndex(lastIndex.length -1)
     }
 
+    pickLongestSubcategory(){
+        if ( !this.subCategory.isDisplayed())
+            browser.waitUntil(()=>{this.subCategory.isDisplayed()})
+        
+        // if (browser.isChrome) {
+        //     browser.switchToFrame(this.mainIframe)
+        // }
+        const options = this.subCategory.$$(".//option")
+        const longest = options.reduce((prev,cur)=>{
+            if ( prev.getText().length > cur.getText().length){
+                return prev
+            } else {
+                return cur
+            }
+        })
+        console.log('Longest')
+        console.log(longest.getText())
+        this.subCategory.selectByVisibleText(longest.getText())
 
+    }
+
+    clickServiceLookup(){
+        this.lookupButtonService.click()
+    }
 }
 
 export default new ProblemCreatePage()
