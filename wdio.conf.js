@@ -1,3 +1,6 @@
+
+const {ReportAggregator, HtmlReporter} = require('@rpii/wdio-html-reporter')
+const log4j = require('log4js')
 exports.config = {
     //
     // ====================
@@ -67,9 +70,10 @@ exports.config = {
          maxInstances : 1,
          browserName : 'firefox'
      },
- {       
-    browserName: 'chrome'
-    }],
+     {       
+        browserName: 'chrome'
+     }
+],
     //
     // ===================
     // Test Configurations
@@ -95,7 +99,7 @@ exports.config = {
     //
     // If you only want to run your tests until a specific amount of tests have failed use
     // bail (default is 0 - don't bail, run all tests).
-    bail: 0,
+    bail: 1,
     //
     // Set a base URL in order to shorten url command calls. If your `url` parameter starts
     // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
@@ -136,8 +140,34 @@ exports.config = {
     // Test reporter for stdout.
     // The only one supported by default is 'dot'
     // see also: https://webdriver.io/docs/dot-reporter.html
-    reporters: ['spec'],
- 
+    reporters: ['spec',
+        [HtmlReporter, {
+            debug: true,
+            outputDir: './reports/html-reports/',
+            filename: 'report.html',
+            reportTitle: 'Test Report Title',
+            
+            //to show the report in a browser when done
+            showInBrowser: true,
+
+            //to turn on screenshots after every test
+            useOnAfterCommandForScreenshot: false,
+
+            // to use the template override option, can point to your own file in the test project:
+            // templateFilename: path.resolve(__dirname, '../src/wdio-html-reporter-alt-template.hbs'),
+            
+            // to add custom template functions for your custom template:
+            // templateFuncs: {
+            //     addOne: (v) => {
+            //         return v+1;
+            //     },
+            // },
+
+            //to initialize the logger
+            LOG: log4j.getLogger("default")
+        }
+        ]
+    ],
     //
     // Options to be passed to Mocha.
     // See the full list at http://mochajs.org/
@@ -218,7 +248,20 @@ exports.config = {
      */
     // afterTest: function(test, context, { error, result, duration, passed, retries }) {
     // },
+    ,
+    afterTest: function (test) {
+        const path = require('path');
+        const moment = require('moment');
 
+        // if test passed, ignore, else take and save screenshot.
+        if (test.passed) {
+            return;
+        }
+        const timestamp = moment().format('YYYYMMDD-HHmmss.SSS');
+        const filepath = path.join('reports/html-reports/screenshots/', timestamp + '.png');
+        browser.saveScreenshot(filepath);
+        process.emit('test:screenshot', filepath);
+    },
 
     /**
      * Hook that gets executed after the suite has ended
@@ -261,6 +304,8 @@ exports.config = {
      * @param {<Object>} results object containing test results
      */
     // onComplete: function(exitCode, config, capabilities, results) {
+    // Located in your wdio.conf.js file
+   
     // },
     /**
     * Gets executed when a refresh happens.

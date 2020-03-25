@@ -18,9 +18,22 @@ function takeScreenshot(path, image) {
   })
 }
 
+function backtoOriginWindow(){
+  
+  //if (browser.isChrome){
+    let handles = browser.getWindowHandles()
+    browser.switchToWindow(handles[0])
+    if (browser.isChrome)
+      browser.switchToFrame($("#gsft_main"))
+  //}
+  //browser.switchToFrame(0)
+
+}
+
 module.exports = {
     getRandomInt,
-    takeScreenshot
+    takeScreenshot,
+    backtoOriginWindow
 }
 // const fs = require("fs");
 

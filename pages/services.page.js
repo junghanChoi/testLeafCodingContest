@@ -16,8 +16,9 @@ class ServicesPage extends Page {
         lastTr.scrollIntoView()
         
         lastTr.$('.//a').click()
-        browser.switchWindow(new RegExp("Create*"))
-
+        browser.switchWindow(new RegExp("Create*")) // When leave the child window, switch Window!
+        if(browser.isChrome)
+            browser.switchToFrame($("#gsft_main"))
     }
 
 }
